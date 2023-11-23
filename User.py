@@ -8,11 +8,13 @@ class User:
         self.is_sending = False
         self.photos = []
 
+        self.setting_language = False
+
         self.reader = None
         self.recognized_photos = {}
 
-    def model_init(self):
-        self.reader = easyocr.Reader(["ru"])
+    def model_init(self, language='ru'):
+        self.reader = easyocr.Reader([language])
 
     def recognize(self):
         with concurrent.futures.ThreadPoolExecutor() as executor:
