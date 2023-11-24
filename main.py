@@ -1,8 +1,8 @@
 import telebot
 from telebot import types
 
-from User import User
-from Users import Users
+from Objects.User import User
+from Objects.Users import Users
 
 print('Type bot token: ')
 bot = telebot.TeleBot(input())
@@ -15,9 +15,12 @@ current_user = User(0)
 def start(message):
     user = User(message.chat.id)
     if len(user.recognized_photos) > 0:
-        send_button('Press "Select photos" to start', ['Add photos', 'Send new photos', 'Choose language'], message.chat.id)
+        send_button('Press "Select photos" to start', ['Add photos',
+                                                       'Send new photos',
+                                                       'Choose language'], message.chat.id)
     else:
-        send_buttons('Press "Select photos" to start', ['Select photos', 'Choose language'], message.chat.id)
+        send_buttons('Press "Select photos" to start', ['Select photos',
+                                                        'Choose language'], message.chat.id)
 
     if users.get_user(user.chat_id) is not None:
         return None
@@ -64,16 +67,19 @@ def get_message(message):
         current_user.is_sending = False
 
         send_message('Starting preparations', message.chat.id)
-        if current_user.reader is None:
+        if current_user.model is None:
             current_user.model_init()
 
         current_user.recognize()
         send_message('Recognizing completed', message.chat.id)
-        send_buttons('Type text for searching...', ['Send new photos', 'Add photos'], message.chat.id)
+        send_buttons('Type text for searching...', ['Send new photos',
+                                                    'Add photos'], message.chat.id)
         return None
 
     if message.text == 'Send new photos':
         current_user.photos.clear()
+        current_user.recognized_photos.clear()
+
         send_button('Send photos to this chat', 'Stop sending', message.chat.id)
         current_user.is_sending = True
         return None
